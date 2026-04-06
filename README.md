@@ -267,6 +267,14 @@ Sentinel is pre-audit software. Do not use in production with real funds until a
 
 If you find a vulnerability, please report it privately to [sol-sentinel-protocol@proton.me](mailto:sol-sentinel-protocol@proton.me). Do not open a public issue. We will acknowledge receipt within 48 hours and aim to publish a fix within 7 days for critical issues.
 
+## Pitch Deck
+
+Choose your language:
+
+- **[English 🇬🇧](https://docs.google.com/presentation/d/1YTMJlaVirLHUFTg61EvdOotBp80UVgsClunzXGO8zO0/edit?usp=sharing)**
+- **[Português 🇧🇷](https://docs.google.com/presentation/d/1wWexZFpSrlSLVohQmJXl86nkVzFER8kpdtNuNpc86c8/edit?usp=sharing)**
+  
+
 ## License
 
 Apache 2.0. See [LICENSE](LICENSE) for the full text.
