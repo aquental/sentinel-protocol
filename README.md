@@ -9,9 +9,9 @@
 </p>
 
 <p align="center">
-  <a href="https://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License" /></a>
+  <a href="https://opensource.org/license/mit"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
   <a href="https://solana.com"><img src="https://img.shields.io/badge/Solana-Devnet-9945FF.svg" alt="Solana Devnet" /></a>
-  <a href="https://www.anchor-lang.com/"><img src="https://img.shields.io/badge/Anchor-0.30+-teal.svg" alt="Anchor" /></a>
+  <a href="https://www.anchor-lang.com/"><img src="https://img.shields.io/badge/Anchor-1.0.0-teal.svg" alt="Anchor" /></a>
   <a href="https://x.com/sln_sentinel_ai"><img src="https://img.shields.io/badge/X-@sln__sentinel__ai-000.svg" alt="X" /></a>
 </p>
 
