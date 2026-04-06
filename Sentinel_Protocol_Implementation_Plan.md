@@ -1,8 +1,4 @@
-Here’s the full **English translation** of your document:
-
----
-
-**Sentinel Protocol — Implementation Plan**
+# Sentinel Protocol — Implementation Plan
 
 ## Overview
 

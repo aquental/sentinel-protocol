@@ -17,11 +17,11 @@
 
 ---
 
-Sentinel Protocol defines how AI agents are controlled, limited, and audited on-chain. Think of it as the **Metaplex of agent governance**: an open, composable standard that any framework can plug into.
+Sentinel Protocol defines how AI agents are controlled, limited, and audited on-chain. Think of it as the **[Metaplex](https://www.metaplex.com/about) of agent governance**: an open, composable standard that any framework can plug into.
 
-AI agents on Solana already manage treasuries, execute trades, and coordinate through DAOs. The ecosystem has identity (Agent Registry, SAID Protocol) and execution (ElizaOS, GOAT, ZerePy), but nobody standardizes what an agent is _allowed_ to do. Sentinel fills that gap with on-chain permissions, spending limits, circuit breakers, and an immutable audit trail.
+AI agents on Solana already manage treasuries, execute trades, and coordinate through DAOs. The ecosystem has identity ([Agent Registry](https://solana.com/agent-registry), [SAID Protocol](https://www.saidprotocol.com/)) and execution ([ElizaOS](https://solanacompass.com/projects/elizaos), [GOAT](https://solanacompass.com/projects/goatindex_ai), [ZerePy](https://solanacompass.com/projects/zerebro)), but nobody standardizes what an agent is _allowed_ to do. _**Sentinel**_ fills that gap with on-chain permissions, spending limits, circuit breakers, and an immutable audit trail.
 
-## How it works
+## ⚙️ How it works
 
 An agent wants to swap 500 USDC on Jupiter. Before the transaction hits the chain, Sentinel intercepts it:
 
@@ -49,7 +49,7 @@ flowchart TD
 
 The Governor holds the rules. The Permission Engine enforces them. The Circuit Breaker catches anomalies. The Audit Log records everything. All on-chain, all verifiable.
 
-## Core components
+## 🧩 Core components
 
 Sentinel is four Anchor programs and one SDK:
 
@@ -63,7 +63,7 @@ Sentinel is four Anchor programs and one SDK:
 
 **sentinel-sdk** — TypeScript and Python libraries that wrap the on-chain programs. Plugins for ElizaOS, GOAT Framework, and ZerePy let developers add governance in a few lines of code.
 
-## Quick start
+## ⚡ Quick start
 
 ### Prerequisites
 
@@ -146,7 +146,7 @@ await breaker.triggerEmergencyStop("Suspicious withdrawal pattern detected");
 await breaker.resume();
 ```
 
-## Framework integrations
+## 🔌 Framework integrations
 
 Sentinel ships plugins for the three major Solana agent frameworks. Each plugin wraps the framework's execution layer so governance happens automatically, with no changes to agent logic.
 
@@ -184,7 +184,7 @@ guard = SentinelGuard(governor="your-governor-pda")
 agent.add_guard(guard)
 ```
 
-## Architecture
+## 🏗️ Architecture
 
 ```
 sentinel-protocol/
@@ -206,7 +206,7 @@ sentinel-protocol/
     └── x402-payments/
 ```
 
-## Ecosystem compatibility
+## 🌐 Ecosystem compatibility
 
 Sentinel is designed to complement existing infrastructure, not replace it:
 
@@ -217,7 +217,7 @@ Sentinel is designed to complement existing infrastructure, not replace it:
 | **x402 Protocol**         | Sentinel validates x402 payment actions against spending policies.                                                 |
 | **Squads Protocol**       | Advanced multisig support via Squads integration for governor management.                                          |
 
-## Roadmap
+## 🗺️ Roadmap
 
 **Q2 2026** — MVP on Devnet. Governor Registry, Permission Engine, Circuit Breaker, Audit Log, TypeScript SDK alpha. Hackathon submission.
 
@@ -227,7 +227,7 @@ Sentinel is designed to complement existing infrastructure, not replace it:
 
 **Q1 2027** — Token launch. Validator network for behavior auditing. Insurance pools v1. DAO governance for the protocol itself.
 
-## Contributing
+## 🤝 Contributing
 
 We welcome contributions of all kinds. Check out [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
@@ -261,13 +261,13 @@ anchor test -- --grep "circuit-breaker"
 anchor test -- --grep "full-flow"
 ```
 
-## Security
+## 🔐 Security
 
 Sentinel is pre-audit software. Do not use in production with real funds until a formal security audit has been completed.
 
 If you find a vulnerability, please report it privately to [sol-sentinel-protocol@proton.me](mailto:sol-sentinel-protocol@proton.me). Do not open a public issue. We will acknowledge receipt within 48 hours and aim to publish a fix within 7 days for critical issues.
 
-## Pitch Deck
+## 🎤 Pitch Deck
 
 Choose your language:
 
@@ -275,13 +275,17 @@ Choose your language:
   - 📄 [Video Pitch](./video/VIDEO.md)
 - **[Português 🇧🇷](https://docs.google.com/presentation/d/1wWexZFpSrlSLVohQmJXl86nkVzFER8kpdtNuNpc86c8/edit?usp=sharing)**
   - 📄 [Roteiro do Vídeo](./video/VIDEO-pb_br)
-  
 
-## License
+## 🛠️ Implementation Plan
+
+- **[English 🇬🇧](Sentinel_Protocol_Implementation_Plan.md)**
+- **[Português 🇧🇷](Sentinel_Protocol_Implementation_Plan-pb_br.md)**
+
+## 📄 License
 
 MIT License. See [LICENSE](LICENSE) for the full text.
 
-## Links
+## 🔗 Links
 
 - **X/Twitter**: [@sln_sentinel_ai](https://x.com/sln_sentinel_ai)
 - **Email**: [sol-sentinel-protocol@proton.me](mailto:sol-sentinel-protocol@proton.me)
@@ -291,5 +295,5 @@ MIT License. See [LICENSE](LICENSE) for the full text.
 ---
 
 <p align="center">
-  <em>Governing the future of the agentic economy.</em>
+  <img src="assets/sentinel-logo.svg" alt="Sentinel Protocol" width="50" /><em>Governing the future of the agentic economy.</em>
 </p>
