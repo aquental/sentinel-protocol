@@ -17,9 +17,22 @@
 
 ---
 
-Sentinel Protocol defines how AI agents are controlled, limited, and audited on-chain. Think of it as the **[Metaplex](https://www.metaplex.com/about) of agent governance**: an open, composable standard that any framework can plug into.
+## 🚨 The Problem
 
-AI agents on Solana already manage treasuries, execute trades, and coordinate through DAOs. The ecosystem has identity ([Agent Registry](https://solana.com/agent-registry), [SAID Protocol](https://www.saidprotocol.com/)) and execution ([ElizaOS](https://solanacompass.com/projects/elizaos), [GOAT](https://solanacompass.com/projects/goatindex_ai), [ZerePy](https://solanacompass.com/projects/zerebro)), but nobody standardizes what an agent is _allowed_ to do. _**Sentinel**_ fills that gap with on-chain permissions, spending limits, circuit breakers, and an immutable audit trail.
+Autonomous AI agents on Solana are already managing treasuries, executing trades, coordinating through DAOs, and interacting with protocols like Jupiter and Raydium. The ecosystem provides solid foundations for **identity** ([Agent Registry](https://solana.com/agent-registry), [SAID Protocol](https://www.saidprotocol.com/)) and **execution** ([ElizaOS](https://solanacompass.com/projects/elizaos), [GOAT framework](https://solanacompass.com/projects/goatindex_ai), [ZerePy](https://solanacompass.com/projects/zerebro)).
+
+However, there is a critical missing piece: **standardized on-chain governance and safety controls**.
+
+Without it:
+
+- Agents can drain treasuries, exceed spending limits, or interact with untrusted protocols due to bugs, prompt injection, or malicious behavior.
+- No immutable audit trail exists for accountability when things go wrong.
+- Developers and DAOs hesitate to give agents real capital or permissions because there's no reliable way to limit risk or enforce rules.
+- Circuit-breaker style protections and configurable policies are either custom-built (and fragile) or non-existent.
+
+**Sentinel Protocol** fills this gap as the open governance standard — think **[Metaplex](https://www.metaplex.com/about) for agent permissions**. It brings on-chain spending limits, permission engines, automatic circuit breakers, and verifiable audit logs so agents can operate safely and scalably in the agentic economy.
+
+> We built the initial version during the **Global Chainlink Convergence Hackathon (2026)**, where we earned **3rd place in the Tenderly Track ([AgentScore](https://chain.link/hackathon/winners/agentscore))** by leveraging Chainlink Runtime Environment ([CRE](https://chain.link/chainlink-runtime-environment)) workflows tested on [Tenderly Virtual TestNets](https://docs.tenderly.co/virtual-testnets) to simulate and validate complex multi-step governance scenarios with real mainnet state.
 
 ## ⚙️ How it works
 
