@@ -277,7 +277,7 @@ Choose your language:
 
 ## License
 
-Apache 2.0. See [LICENSE](LICENSE) for the full text.
+MIT License. See [LICENSE](LICENSE) for the full text.
 
 ## Links
 
