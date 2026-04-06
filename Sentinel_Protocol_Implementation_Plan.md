@@ -1,64 +1,68 @@
-# Sentinel Protocol — Plano de Implementação
-
-## Visão Geral
-
-O Sentinel Protocol é um protocolo open-source de governança para agentes autônomos de IA na Solana. Ele padroniza como agentes são controlados, limitados e auditados on-chain — funcionando como o "Metaplex da governança de agentes".
-
-Este documento detalha a arquitetura técnica, fases de desenvolvimento, stack tecnológico e milestones para levar o projeto do conceito ao mainnet.
+Here’s the full **English translation** of your document:
 
 ---
 
-## 1. Arquitetura Técnica
+**Sentinel Protocol — Implementation Plan**
 
-### 1.1 Componentes Core do Protocolo
+## Overview
 
-O protocolo é composto por 4 programas Anchor on-chain e 1 SDK off-chain:
+The Sentinel Protocol is an open-source governance protocol for autonomous AI agents on Solana. It standardizes how agents are controlled, constrained, and audited on-chain — functioning as the "Metaplex of agent governance."
 
-**Programa 1: Governor Registry**
-Registro central de "Governors" — cada Governor é uma conta PDA (Program Derived Address) que define as regras de governança de um agente específico. Quando um desenvolvedor quer governar um agente, ele cria um Governor vinculado à public key do agente.
+This document details the technical architecture, development phases, technology stack, and milestones to take the project from concept to mainnet.
 
-Campos da conta Governor:
-- `authority` (Pubkey): quem pode modificar as regras (owner, multisig ou DAO)
-- `agent` (Pubkey): a public key do agente governado
-- `spending_policy` (SpendingPolicy): limites de gasto
-- `allowed_protocols` (Vec<Pubkey>): program IDs que o agente pode interagir
-- `allowed_tokens` (Vec<Pubkey>): token mints permitidos
-- `circuit_breaker` (CircuitBreakerConfig): condições de parada emergencial
-- `multisig_config` (Option<MultisigConfig>): configuração de multi-assinatura
-- `timelock_seconds` (u64): delay obrigatório para mudanças de policy
+---
+
+## 1. Technical Architecture
+
+### 1.1 Core Protocol Components
+
+The protocol consists of 4 on-chain Anchor programs and 1 off-chain SDK:
+
+**Program 1: Governor Registry**  
+Central registry of "Governors" — each Governor is a PDA (Program Derived Address) account that defines the governance rules for a specific agent. When a developer wants to govern an agent, they create a Governor linked to the agent’s public key.
+
+Governor account fields:
+- `authority` (Pubkey): who can modify the rules (owner, multisig, or DAO)
+- `agent` (Pubkey): the public key of the governed agent
+- `spending_policy` (SpendingPolicy): spending limits
+- `allowed_protocols` (Vec<Pubkey>): program IDs the agent is allowed to interact with
+- `allowed_tokens` (Vec<Pubkey>): allowed token mints
+- `circuit_breaker` (CircuitBreakerConfig): emergency stop conditions
+- `multisig_config` (Option<MultisigConfig>): multi-signature configuration
+- `timelock_seconds` (u64): mandatory delay for policy changes
 - `status` (GovernorStatus): Active, Paused, Frozen, Decommissioned
-- `created_at` (i64): timestamp de criação
-- `updated_at` (i64): timestamp da última atualização
+- `created_at` (i64): creation timestamp
+- `updated_at` (i64): last update timestamp
 
-**Programa 2: Permission Engine**
-Motor de permissões que intercepta e valida ações do agente contra as policies definidas no Governor. Funciona como um middleware on-chain.
+**Program 2: Permission Engine**  
+Permission engine that intercepts and validates agent actions against the policies defined in the Governor. It works as an on-chain middleware.
 
-Instruções principais:
-- `validate_action(agent, action_type, target_program, amount, token)` → retorna Allow/Deny
-- `request_permission(agent, action_descriptor)` → para ações que requerem aprovação
-- `approve_permission(signer, request_id)` → aprovação de multisig
-- `batch_validate(agent, actions[])` → validação em lote para eficiência
+Main instructions:
+- `validate_action(agent, action_type, target_program, amount, token)` → returns Allow/Deny
+- `request_permission(agent, action_descriptor)` → for actions requiring approval
+- `approve_permission(signer, request_id)` → multisig approval
+- `batch_validate(agent, actions[])` → batch validation for efficiency
 
-**Programa 3: Circuit Breaker**
-Sistema de parada emergencial automática.
+**Program 3: Circuit Breaker**  
+Automatic emergency stop system.
 
-Parâmetros configuráveis:
-- `max_loss_percent` (u8): perda máxima permitida antes do freeze (ex: 5%)
-- `max_transactions_per_hour` (u32): rate limit de transações
-- `max_single_transaction_amount` (u64): teto por transação individual
-- `anomaly_detection_window` (u64): janela de tempo para detectar padrões anômalos
-- `cooldown_period` (u64): tempo de cooldown após trigger
-- `auto_resume` (bool): se o agente volta automaticamente após cooldown
+Configurable parameters:
+- `max_loss_percent` (u8): maximum allowed loss before freeze (e.g., 5%)
+- `max_transactions_per_hour` (u32): transaction rate limit
+- `max_single_transaction_amount` (u64): per-transaction cap
+- `anomaly_detection_window` (u64): time window for detecting anomalous patterns
+- `cooldown_period` (u64): cooldown period after trigger
+- `auto_resume` (bool): whether the agent automatically resumes after cooldown
 
-Instruções:
-- `check_and_enforce(agent, proposed_action)` → verifica contra limites
-- `trigger_emergency_stop(agent, reason)` → para manual por authority
-- `resume_agent(agent)` → retoma operação (requer authority ou cooldown)
+Instructions:
+- `check_and_enforce(agent, proposed_action)` → checks against limits
+- `trigger_emergency_stop(agent, reason)` → manual trigger by authority
+- `resume_agent(agent)` → resumes operation (requires authority or cooldown)
 
-**Programa 4: Audit Log**
-Registro imutável on-chain de todas as ações do agente.
+**Program 4: Audit Log**  
+Immutable on-chain record of all agent actions.
 
-Cada entrada de log contém:
+Each log entry contains:
 - `agent` (Pubkey)
 - `action_type` (enum: Transfer, Swap, Stake, GovernanceChange, etc.)
 - `target_program` (Pubkey)
@@ -68,229 +72,240 @@ Cada entrada de log contém:
 - `timestamp` (i64)
 - `tx_signature` (Hash)
 
-Nota: para otimizar custos on-chain, logs detalhados são armazenados off-chain (Arweave/Shadow Drive) com hash de verificação on-chain.
+Note: To optimize on-chain costs, detailed logs are stored off-chain (Arweave/Shadow Drive) with a verification hash on-chain.
 
-**SDK TypeScript/Python: sentinel-sdk**
-Biblioteca client-side que abstrai a complexidade dos programas on-chain.
+**TypeScript/Python SDK: sentinel-sdk**  
+Client-side library that abstracts the complexity of the on-chain programs.
 
 ```
 sentinel-sdk/
 ├── src/
-│   ├── governor.ts          # Criação e gerenciamento de Governors
-│   ├── permissions.ts       # Validação de permissões
-│   ├── circuit-breaker.ts   # Configuração de circuit breakers
-│   ├── audit.ts             # Consulta de logs de auditoria
-│   ├── multisig.ts          # Operações multi-assinatura
+│   ├── governor.ts          # Governor creation and management
+│   ├── permissions.ts       # Permission validation
+│   ├── circuit-breaker.ts   # Circuit breaker configuration
+│   ├── audit.ts             # Audit log querying
+│   ├── multisig.ts          # Multi-signature operations
 │   ├── plugins/
-│   │   ├── elizaos.ts       # Plugin para ElizaOS
-│   │   ├── goat.ts          # Plugin para GOAT Framework
-│   │   └── zerepy.ts        # Plugin para ZerePy
+│   │   ├── elizaos.ts       # Plugin for ElizaOS
+│   │   ├── goat.ts          # Plugin for GOAT Framework
+│   │   └── zerepy.ts        # Plugin for ZerePy
 │   └── utils/
-│       ├── pda.ts           # Helpers para PDAs
-│       └── types.ts         # Tipos compartilhados
+│       ├── pda.ts           # PDA helpers
+│       └── types.ts         # Shared types
 ├── python/
-│   └── sentinel_sdk/        # Bindings Python para ZerePy
+│   └── sentinel_sdk/        # Python bindings for ZerePy
 └── examples/
     ├── basic-governor.ts
     ├── trading-bot-governance.ts
     └── dao-governed-agent.ts
 ```
 
-### 1.2 Diagrama de Fluxo
+### 1.2 Flow Diagram
 
-```
-Agente de IA quer executar ação
-        │
-        ▼
-┌─────────────────────┐
-│   Sentinel SDK      │ ← Intercepta a ação antes da execução
-│   (Client-side)     │
-└─────────┬───────────┘
-          │
-          ▼
-┌─────────────────────┐
-│  Permission Engine   │ ← Valida contra policies do Governor
-│  (On-chain)         │
-└─────────┬───────────┘
-          │
-     ┌────┴────┐
-     │         │
-  ALLOWED   DENIED
-     │         │
-     ▼         ▼
-┌──────────┐  ┌──────────────┐
-│ Circuit  │  │ Audit Log    │
-│ Breaker  │  │ (Denied)     │
-│ Check    │  └──────────────┘
-└────┬─────┘
-     │
-  ┌──┴──┐
-  │     │
- OK   TRIGGER
-  │     │
-  ▼     ▼
-┌────┐ ┌───────────┐
-│Exec│ │ FREEZE    │
-│Ação│ │ + Notify  │
-└──┬─┘ └───────────┘
-   │
-   ▼
-┌──────────────┐
-│ Audit Log    │
-│ (Executed)   │
-└──────────────┘
+```mermaid
+flowchart TD
+    Start["AI Agent wants to execute action"] 
+    --> SDK["Sentinel SDK<br/><small>(Client-side)</small><br/>Intercepts the action before execution"]
+
+    SDK --> Permission["Permission Engine<br/><small>(On-chain)</small><br/>Validates against Governor policies"]
+
+    Permission --> Decision{" "}
+    
+    Decision -->|ALLOWED| Circuit["Circuit Breaker Check"]
+    Decision -->|DENIED| AuditDenied["Audit Log<br/><small>(Denied)</small>"]
+
+    Circuit --> Check{" "}
+    
+    Check -->|OK| Execute["Execute Action"]
+    Check -->|TRIGGER| Freeze["FREEZE Agent<br/>+ Notify Authority"]
+
+    Execute --> AuditExecuted["Audit Log<br/><small>(Executed)</small>"]
+    Freeze --> AuditExecuted
+
+    classDef default fill:#2a2a2a,stroke:#666,stroke-width:2px,color:#ddd,rx:8,ry:8;
+    classDef box fill:#1f1f1f,stroke:#888,stroke-width:2px,color:#eee;
+    classDef decision fill:#333,stroke:#999,stroke-width:2px,color:#ffcc00;
+    
+    class Start,SDK,Permission,Circuit,Execute,Freeze,AuditDenied,AuditExecuted box;
+    class Decision decision;
 ```
 
-### 1.3 Integração com o Ecossistema Existente
+### 1.3 Integration with Existing Ecosystem
 
-- **Agent Registry (Solana Foundation):** Sentinel lê a identidade do agente do Agent Registry. O Governor referencia o agent_id do registry, não reinventa identidade.
-- **SAID Protocol:** Sentinel pode usar SAID scores como input para policies (ex: agentes com reputação > 80 têm limites maiores).
-- **ElizaOS:** Plugin que wrappa o `execute()` do ElizaOS com validação Sentinel antes de cada ação on-chain.
-- **GOAT Framework:** Middleware que intercepta tool calls do GOAT e valida contra o Governor.
-- **x402 Protocol:** Validação de pagamentos x402 contra spending policies.
+- **Agent Registry (Solana Foundation):** Sentinel reads the agent’s identity from the Agent Registry. The Governor references the agent_id from the registry instead of reinventing identity.
+- **SAID Protocol:** Sentinel can use SAID scores as input for policies (e.g., agents with reputation > 80 have higher limits).
+- **ElizaOS:** Plugin that wraps the ElizaOS `execute()` with Sentinel validation before every on-chain action.
+- **GOAT Framework:** Middleware that intercepts GOAT tool calls and validates them against the Governor.
+- **x402 Protocol:** x402 payment validation against spending policies.
 
 ---
 
-## 2. Stack Tecnológico
+## 2. Technology Stack
 
 ### 2.1 On-chain (Solana Programs)
 
-| Componente | Tecnologia | Justificativa |
-|---|---|---|
-| Smart Contracts | Anchor (Rust) | Framework padrão Solana, type-safety, IDL automática |
-| Testes | Anchor Test (Mocha/TypeScript) | Testes de integração end-to-end |
-| Deployment | Solana CLI + Anchor Deploy | Devnet → Mainnet pipeline |
-| Armazenamento off-chain | Shadow Drive ou Arweave | Logs detalhados com hash on-chain |
+| Component          | Technology              | Justification                          |
+|--------------------|-------------------------|----------------------------------------|
+| Smart Contracts    | Anchor (Rust)           | Standard Solana framework, type-safety, automatic IDL |
+| Testing            | Anchor Test (Mocha/TS)  | End-to-end integration tests           |
+| Deployment         | Solana CLI + Anchor     | Devnet → Mainnet pipeline              |
+| Off-chain Storage  | Shadow Drive or Arweave | Detailed logs with on-chain hash       |
 
 ### 2.2 SDK & Tooling
 
-| Componente | Tecnologia | Justificativa |
-|---|---|---|
-| SDK Principal | TypeScript | Ecossistema Solana é TS-first |
-| SDK Python | Python bindings (anchorpy) | Para ZerePy e agentes Python |
-| CLI | Node.js (Commander.js) | Gerenciamento de governors via terminal |
-| Dashboard | React + Next.js | Interface web para monitoramento |
+| Component       | Technology                  | Justification                          |
+|-----------------|-----------------------------|----------------------------------------|
+| Main SDK        | TypeScript                  | Solana ecosystem is TS-first           |
+| Python SDK      | Python bindings (anchorpy)  | For ZerePy and Python agents           |
+| CLI             | Node.js (Commander.js)      | Terminal-based governor management     |
+| Dashboard       | React + Next.js             | Web interface for monitoring           |
 
-### 2.3 Infraestrutura
+### 2.3 Infrastructure
 
-| Componente | Tecnologia | Justificativa |
-|---|---|---|
-| CI/CD | GitHub Actions | Deploy automático, testes |
-| Monitoramento | Helius Webhooks | Alertas em tempo real de ações |
-| Indexação | Helius DAS API | Consulta rápida de logs e estados |
-| Documentação | Docusaurus | Docs developer-friendly |
+| Component      | Technology           | Justification                       |
+|----------------|----------------------|-------------------------------------|
+| CI/CD          | GitHub Actions       | Automated deploy and testing        |
+| Monitoring     | Helius Webhooks      | Real-time action alerts             |
+| Indexing       | Helius DAS API       | Fast querying of logs and states    |
+| Documentation  | Docusaurus           | Developer-friendly docs             |
 
 ---
 
-## 3. Fases de Desenvolvimento
+## 3. Development Phases
 
-### FASE 1: Foundation (Semanas 1-4) — Para o Hackathon
+### PHASE 1: Foundation (Weeks 1-4) — For the Hackathon
 
-**Objetivo:** MVP funcional no Devnet demonstrando o core do protocolo.
+**Objective:** Functional MVP on Devnet demonstrating the protocol core.
 
-**Semana 1: Setup & Governor Registry**
-- Inicializar projeto Anchor com estrutura monorepo
-- Implementar programa Governor Registry (criar, atualizar, pausar governors)
-- Definir structs de dados (SpendingPolicy, CircuitBreakerConfig, MultisigConfig)
-- Testes unitários para todas as instruções
-- Deliverable: Governor pode ser criado e configurado no Devnet
+**Week 1: Setup & Governor Registry**
+- Initialize Anchor project with monorepo structure
+- Implement Governor Registry program (create, update, pause governors)
+- Define data structs (SpendingPolicy, CircuitBreakerConfig, MultisigConfig)
+- Unit tests for all instructions
+- Deliverable: Governor can be created and configured on Devnet
 
-**Semana 2: Permission Engine & Circuit Breaker**
-- Implementar programa Permission Engine (validate_action, request/approve_permission)
-- Implementar programa Circuit Breaker (check_and_enforce, emergency_stop)
-- Cross-program invocations (CPI) entre Permission Engine ↔ Governor ↔ Circuit Breaker
-- Testes de integração: agente tenta ação → permitida/bloqueada
-- Deliverable: Flow completo de validação funcionando
+**Week 2: Permission Engine & Circuit Breaker**
+- Implement Permission Engine program (validate_action, request/approve_permission)
+- Implement Circuit Breaker program (check_and_enforce, emergency_stop)
+- Cross-program invocations (CPI) between Permission Engine ↔ Governor ↔ Circuit Breaker
+- Integration tests: agent attempts action → allowed/blocked
+- Deliverable: Complete validation flow working
 
-**Semana 3: SDK TypeScript Alpha + Audit Log**
-- Implementar programa Audit Log (log on-chain simplificado)
-- Criar sentinel-sdk com classes: SentinelGovernor, PermissionValidator, CircuitBreaker
-- Exemplo prático: trading bot com spending limits e kill-switch
-- Deliverable: SDK permite criar governor e governar agente em < 10 linhas de código
+**Week 3: TypeScript SDK Alpha + Audit Log**
+- Implement Audit Log program (simplified on-chain logging)
+- Create sentinel-sdk with classes: SentinelGovernor, PermissionValidator, CircuitBreaker
+- Practical example: trading bot with spending limits and kill-switch
+- Deliverable: SDK allows creating a governor and governing an agent in < 10 lines of code
 
-**Semana 4: Demo, Pitch & Polimento**
-- Criar demo interativa: agente tenta gastar além do limite → circuit breaker ativa
-- Gravar vídeo de demo para o hackathon
-- Documentação mínima (README, getting started)
-- Refinar pitch deck com dados reais do MVP
-- Deliverable: Submission completa do hackathon
+**Week 4: Demo, Pitch & Polish**
+- Create interactive demo: agent tries to overspend → circuit breaker activates
+- Record demo video for the hackathon
+- Minimal documentation (README, getting started)
+- Refine pitch deck with real MVP data
+- Deliverable: Complete hackathon submission
 
-### FASE 2: Ecosystem Integration (Semanas 5-12)
+### PHASE 2: Ecosystem Integration (Weeks 5-12)
 
-**Objetivo:** Integrar com frameworks de agentes existentes e atrair primeiros usuários.
+**Objective:** Integrate with existing agent frameworks and attract early users.
 
-**Semanas 5-6: Plugin ElizaOS**
-- Estudar arquitetura de plugins do ElizaOS
-- Implementar sentinel-elizaos-plugin que intercepta ações on-chain
-- Tutorial: "Como adicionar governança ao seu agente ElizaOS em 5 minutos"
-- Publicar no npm
+**Weeks 5-6: ElizaOS Plugin**
+- Study ElizaOS plugin architecture
+- Implement sentinel-elizaos-plugin that intercepts on-chain actions
+- Tutorial: “How to add governance to your ElizaOS agent in 5 minutes”
+- Publish on npm
 
-**Semanas 7-8: Plugin GOAT Framework + ZerePy**
-- Implementar middleware para GOAT Framework (TypeScript)
-- Implementar bindings Python para ZerePy
-- Testes de integração com agentes reais
-- Publicar no npm e PyPI
+**Weeks 7-8: GOAT Framework + ZerePy Plugin**
+- Implement middleware for GOAT Framework (TypeScript)
+- Implement Python bindings for ZerePy
+- Integration tests with real agents
+- Publish on npm and PyPI
 
-**Semanas 9-10: Governance Dashboard**
-- Frontend React/Next.js para visualização
-- Funcionalidades: ver governors ativos, logs de auditoria, status de circuit breakers
-- Painel de controle: pausar/resumir agente, modificar policies
-- Conectar com wallet (Phantom/Backpack)
+**Weeks 9-10: Governance Dashboard**
+- React/Next.js frontend for visualization
+- Features: view active governors, audit logs, circuit breaker status
+- Control panel: pause/resume agent, modify policies
+- Wallet connection (Phantom/Backpack)
 
-**Semanas 11-12: Audit & Security**
-- Revisão de segurança interna (fuzzing, testes de edge case)
-- Audit externo (Sec3, OtterSec ou Neodyme — candidatar a grants)
-- Programa de bug bounty (limitado, comunidade)
-- Documentação completa no Docusaurus
+**Weeks 11-12: Audit & Security**
+- Internal security review (fuzzing, edge-case testing)
+- External audit (Sec3, OtterSec or Neodyme — apply for grants)
+- Bug bounty program (limited, community-driven)
+- Complete documentation on Docusaurus
 
-### FASE 3: Mainnet & Growth (Semanas 13-24)
+### PHASE 3: Mainnet & Growth (Weeks 13-24)
 
-**Objetivo:** Lançar no mainnet, atrair agentes reais, estabelecer o padrão.
+**Objective:** Launch on mainnet, attract real agents, and establish the standard.
 
-**Semanas 13-14: Mainnet Beta**
-- Deploy dos programas no Mainnet-Beta
-- Migration guide para usuários do Devnet
+**Weeks 13-14: Mainnet Beta**
+- Deploy programs to Mainnet-Beta
+- Migration guide for Devnet users
 - Monitoring & alerting via Helius Webhooks
-- Rate limits e circuit breakers para os próprios programas
+- Rate limits and circuit breakers for the programs themselves
 
-**Semanas 15-18: Community & Adoption**
-- Programa de Grants: $5K-$10K para developers que integram Sentinel
-- Workshops na Superteam BR e comunidades Solana
-- Listar como skill no awesome-solana-ai da Solana Foundation
-- Submissão como SKILL.md oficial para agentes AI
-- Parcerias com 3-5 projetos de agentes ativos
+**Weeks 15-18: Community & Adoption**
+- Grants Program: $5K–$10K for developers integrating Sentinel
+- Workshops at Superteam BR and Solana communities
+- List as a skill in Solana Foundation’s awesome-solana-ai
+- Official SKILL.md submission for AI agents
+- Partnerships with 3–5 active agent projects
 
-**Semanas 19-22: Advanced Features**
-- Multi-sig avançado com Squads Protocol integration
-- Spending policies temporais (limites diferentes por horário/dia)
-- Agent scoring integration (SAID Protocol scores como input)
-- Cross-program governance (governar agente em múltiplos protocolos)
-- Insurance pool v0: stakers depositam SOL para cobrir perdas de agentes governados
+**Weeks 19-22: Advanced Features**
+- Advanced multi-sig with Squads Protocol integration
+- Temporal spending policies (different limits by time/day)
+- Agent scoring integration (SAID Protocol scores as input)
+- Cross-program governance (govern agent across multiple protocols)
+- Insurance pool v0: stakers deposit SOL to cover losses of governed agents
 
-**Semanas 23-24: Token & Decentralization**
-- Design de tokenomics (governance token, staking para validators)
-- Validator network: terceiros auditam comportamento de agentes e ganham fees
-- DAO governance para o próprio protocolo Sentinel
+**Weeks 23-24: Token & Decentralization**
+- Tokenomics design (governance token, staking for validators)
+- Validator network: third parties audit agent behavior and earn fees
+- DAO governance for the Sentinel protocol itself
 - Whitepaper v1
 
+### Gantt Chart
+```mermaid
+gantt
+    title Sentinel Protocol - 24-Week Roadmap
+    dateFormat YYYY-MM-DD
+    axisFormat %W
+    tickInterval 4week
+
+    section Phase 1
+    Foundation (Hackathon)          :p1, 2026-04-15, 4w
+
+    section Phase 2
+    Ecosystem Integration           :p2, after p1, 8w
+
+    section Phase 3
+    Mainnet & Growth                :p3, after p2, 12w
+
+    section Key Milestones
+    Hackathon Submission            :milestone, m1, 2026-05-04, 1d
+    Hackathon Deadline              :milestone, d1, 2026-05-11, 1d
+    Plugins Published               :milestone, m2, 2026-06-29, 1d
+    Security Audit Complete         :milestone, m3, 2026-07-27, 1d
+    Mainnet Beta Launch             :milestone, m4, 2026-08-10, 1d
+    Project Completion              :milestone, m5, 2026-09-21, 1d
+```
+
 ---
 
-## 4. Estrutura do Repositório
+## 4. Repository Structure
 
 ```
 sentinel-protocol/
-├── programs/                    # Programas Anchor (Rust)
+├── programs/                    # Anchor Programs (Rust)
 │   ├── governor-registry/
 │   │   ├── src/
 │   │   │   ├── lib.rs
 │   │   │   ├── state.rs        # Account structs
-│   │   │   ├── instructions/   # Handlers por instrução
+│   │   │   ├── instructions/   # Instruction handlers
 │   │   │   │   ├── create_governor.rs
 │   │   │   │   ├── update_policy.rs
 │   │   │   │   ├── pause_governor.rs
 │   │   │   │   └── mod.rs
 │   │   │   ├── errors.rs       # Custom errors
-│   │   │   └── events.rs       # Eventos para indexação
+│   │   │   └── events.rs       # Events for indexing
 │   │   └── Cargo.toml
 │   ├── permission-engine/
 │   │   └── src/
@@ -317,7 +332,7 @@ sentinel-protocol/
 │           └── instructions/
 │               ├── log_action.rs
 │               └── query_logs.rs
-├── sdk/                         # SDK TypeScript
+├── sdk/                         # TypeScript SDK
 │   ├── src/
 │   │   ├── index.ts
 │   │   ├── governor.ts
@@ -330,7 +345,7 @@ sentinel-protocol/
 │   │       └── zerepy.ts
 │   ├── package.json
 │   └── tsconfig.json
-├── python-sdk/                  # SDK Python
+├── python-sdk/                  # Python SDK
 │   ├── sentinel_sdk/
 │   │   ├── __init__.py
 │   │   ├── governor.py
@@ -346,13 +361,13 @@ sentinel-protocol/
 │   ├── src/
 │   │   └── index.ts
 │   └── package.json
-├── tests/                       # Testes de integração
+├── tests/                       # Integration Tests
 │   ├── governor-registry.ts
 │   ├── permission-engine.ts
 │   ├── circuit-breaker.ts
 │   ├── full-flow.ts
 │   └── stress-test.ts
-├── docs/                        # Documentação
+├── docs/                        # Documentation
 │   ├── getting-started.md
 │   ├── architecture.md
 │   ├── sdk-reference.md
@@ -360,7 +375,7 @@ sentinel-protocol/
 │       ├── elizaos.md
 │       ├── goat.md
 │       └── zerepy.md
-├── examples/                    # Exemplos práticos
+├── examples/                    # Practical Examples
 │   ├── basic-governor/
 │   ├── trading-bot/
 │   ├── dao-governed-agent/
@@ -369,88 +384,88 @@ sentinel-protocol/
 ├── Cargo.toml
 ├── package.json
 ├── README.md
-├── LICENSE                      # Apache 2.0
+├── LICENSE                      # MIT
 └── CONTRIBUTING.md
 ```
 
 ---
 
-## 5. Métricas de Sucesso por Fase
+## 5. Success Metrics by Phase
 
-### Fase 1 (Hackathon)
-- MVP funcional no Devnet
-- Pelo menos 1 agente demo governado end-to-end
-- Submission aceita no hackathon com vídeo de demo
-- SDK permite criar governor em < 10 linhas
+### Phase 1 (Hackathon)
+- Functional MVP on Devnet
+- At least 1 end-to-end governed agent demo
+- Hackathon submission accepted with demo video
+- SDK allows creating governor in < 10 lines
 
-### Fase 2 (Ecosystem)
-- 3 plugins publicados (ElizaOS, GOAT, ZerePy)
-- 10+ agentes usando Sentinel no Devnet
-- Dashboard funcional com monitoramento real-time
-- Audit de segurança concluído
-- 50+ stars no GitHub
+### Phase 2 (Ecosystem)
+- 3 plugins published (ElizaOS, GOAT, ZerePy)
+- 10+ agents using Sentinel on Devnet
+- Functional dashboard with real-time monitoring
+- Security audit completed
+- 50+ GitHub stars
 
-### Fase 3 (Mainnet)
-- Deploy no Mainnet-Beta
-- 100+ agentes governados
-- $50K+ em valor total governado (TVG — Total Value Governed)
-- 3+ parcerias formais com projetos de agentes
-- Listado no awesome-solana-ai oficial
-- $10K+ MRR de protocol fees
-
----
-
-## 6. Riscos Técnicos e Mitigações
-
-### Risco: Latência adicionada pelo middleware de governança
-**Mitigação:** Validações simples (spending limits, allowlists) são ultra-leves on-chain (< 5ms). Validações complexas usam cache off-chain com verificação periódica on-chain. O agente pode operar em "optimistic mode" onde executa e verifica depois para ações de baixo risco.
-
-### Risco: Custo de armazenamento on-chain para audit logs
-**Mitigação:** Modelo híbrido — hash do log on-chain, dados completos no Shadow Drive/Arweave. Custo estimado: ~0.002 SOL por log entry on-chain (apenas hash + metadata mínima).
-
-### Risco: Adoção depende de frameworks adotarem o padrão
-**Mitigação:** Criar plugins que são zero-config. O agente não precisa mudar seu código — o plugin do Sentinel wrappa as chamadas automaticamente. Contribuir PRs diretamente nos repos do ElizaOS/GOAT.
-
-### Risco: Smart contract vulnerabilities
-**Mitigação:** Anchor framework reduz superfície de ataque. Audit externo antes do mainnet. Bug bounty program. Upgradeable programs com timelock de 48h para upgrades.
+### Phase 3 (Mainnet)
+- Deployed on Mainnet-Beta
+- 100+ governed agents
+- $50K+ Total Value Governed (TVG)
+- 3+ formal partnerships with agent projects
+- Listed in official awesome-solana-ai
+- $10K+ MRR from protocol fees
 
 ---
 
-## 7. Orçamento Estimado (6 meses)
+## 6. Technical Risks and Mitigations
 
-| Item | Custo Mensal | Total 6 Meses |
-|---|---|---|
-| 2 Desenvolvedores Solana/Rust (full-time) | $8,000 | $48,000 |
-| 1 Desenvolvedor Frontend/SDK (full-time) | $4,000 | $24,000 |
-| Infra (RPC, hosting, shadow drive) | $500 | $3,000 |
-| Audit de segurança (one-time) | — | $15,000 |
-| Marketing / Developer relations | $1,000 | $6,000 |
-| Legal / Compliance | — | $4,000 |
-| **Total** | | **$100,000** |
+### Risk: Added latency from governance middleware
+**Mitigation:** Simple validations (spending limits, allowlists) are ultra-light on-chain (< 5ms). Complex validations use off-chain cache with periodic on-chain verification. The agent can operate in “optimistic mode” — execute first and verify later for low-risk actions.
 
-Nota: Valores baseados em custos Brasil/LatAm. O prêmio do hackathon + seed round de $500K cobre 12+ meses de operação com buffer confortável.
+### Risk: On-chain storage cost for audit logs
+**Mitigation:** Hybrid model — log hash on-chain, full data on Shadow Drive/Arweave. Estimated cost: ~0.002 SOL per log entry on-chain (hash + minimal metadata only).
 
----
+### Risk: Adoption depends on frameworks adopting the standard
+**Mitigation:** Create zero-config plugins. The agent doesn’t need to change its code — the Sentinel plugin automatically wraps the calls. Contribute PRs directly to ElizaOS/GOAT repos.
 
-## 8. Checklist do Hackathon (Prioridade Imediata)
-
-- [ ] Inicializar projeto Anchor (`anchor init sentinel-protocol`)
-- [ ] Implementar Governor Registry com create/update/pause
-- [ ] Implementar Permission Engine com validate_action
-- [ ] Implementar Circuit Breaker com check_and_enforce + emergency_stop
-- [ ] Implementar Audit Log simplificado
-- [ ] Criar sentinel-sdk TypeScript com 3 classes principais
-- [ ] Escrever exemplo: trading bot com spending limits
-- [ ] Deploy no Devnet
-- [ ] Testes de integração passando
-- [ ] README com getting started
-- [ ] Gravar vídeo de demo (3-5 min)
-- [ ] Finalizar pitch deck com dados reais do MVP
-- [ ] Submeter no Colosseum
+### Risk: Smart contract vulnerabilities
+**Mitigation:** Anchor framework reduces attack surface. External audit before mainnet. Bug bounty program. Upgradeable programs with 48h timelock for upgrades.
 
 ---
 
-## 9. Referências e Recursos
+## 7. Estimated Budget (6 months)
+
+| Item                              | Monthly Cost | Total 6 Months |
+|-----------------------------------|--------------|----------------|
+| 2 Solana/Rust Developers (full-time) | $8,000      | $48,000       |
+| 1 Frontend/SDK Developer (full-time) | $4,000      | $24,000       |
+| Infra (RPC, hosting, shadow drive)   | $500        | $3,000        |
+| Security Audit (one-time)            | —           | $15,000       |
+| Marketing / Developer Relations      | $1,000      | $6,000        |
+| Legal / Compliance                   | —           | $4,000        |
+| **Total**                            |              | **$100,000**  |
+
+Note: Costs based on Brazil/LatAm rates. Hackathon prize + $500K seed round comfortably covers 12+ months of operation with buffer.
+
+---
+
+## 8. Hackathon Checklist (Immediate Priority)
+
+- [ ] Initialize Anchor project (`anchor init sentinel-protocol`)
+- [ ] Implement Governor Registry with create/update/pause
+- [ ] Implement Permission Engine with validate_action
+- [ ] Implement Circuit Breaker with check_and_enforce + emergency_stop
+- [ ] Implement simplified Audit Log
+- [ ] Create TypeScript sentinel-sdk with 3 main classes
+- [ ] Write example: trading bot with spending limits
+- [ ] Deploy to Devnet
+- [ ] Integration tests passing
+- [ ] README with getting started
+- [ ] Record demo video (3-5 min)
+- [ ] Finalize pitch deck with real MVP data
+- [ ] Submit to Colosseum
+
+---
+
+## 9. References and Resources
 
 - Solana Agent Registry: https://solana.com/agent-registry
 - SAID Protocol: awesome-solana-ai (GitHub)
@@ -463,4 +478,4 @@ Nota: Valores baseados em custos Brasil/LatAm. O prêmio do hackathon + seed rou
 
 ---
 
-*Documento criado em abril de 2026. Sentinel Protocol — Governando o futuro da economia agêntica.*
+*Document created in April 2026. Sentinel Protocol — Governing the future of the agent economy.*

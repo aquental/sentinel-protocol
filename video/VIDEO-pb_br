@@ -1,0 +1,212 @@
+# 🎬 Sentinel Protocol — Roteiro de Vídeo (8 Slides)
+
+**Duração alvo:** ~3–4 minutos
+**Estilo:** calmo, confiante, levemente mais lento do que o natural
+
+---
+
+## Slide 1 — O Problema
+
+**Intro:**
+"Vamos começar pelo problema."
+
+**Descrição:**
+Abra com impacto:
+
+"Hoje, agentes de IA operam com poder ilimitado e zero accountability."
+
+Passe pelos dados:
+
+"Há dois dias, o Drift Protocol perdeu 280 milhões de dólares — não por um bug, mas por uma falha de governança."
+
+"Ao mesmo tempo, a Solana já processou mais de 15 milhões de transações feitas por agentes de IA."
+
+"E mesmo assim — não existe nenhum padrão para controlar o que esses agentes podem fazer."
+
+Pausa breve.
+
+"Essa é a lacuna que estamos resolvendo."
+
+⏱️ ~25–30s
+
+---
+
+## Slide 2 — A Solução
+
+**Intro:**
+"Então nós construímos o Sentinel Protocol."
+
+**Descrição:**
+
+"Sentinel é o padrão open-source de governança para agentes de IA na Solana."
+
+Explique de forma simples:
+
+"Ele define como agentes são controlados, limitados e auditados on-chain."
+
+Passe pelas funcionalidades:
+
+* "Permissões — o que o agente pode acessar"
+* "Circuit breakers — kill-switch automático quando algo dá errado"
+* "Audit trail — todas as ações registradas on-chain"
+* "Políticas de gasto — limites programáveis"
+
+Feche com o código:
+
+"Tudo isso em poucas linhas de código."
+
+⏱️ ~25–30s
+
+---
+
+## Slide 3 — Por que Solana
+
+**Intro:**
+"Isso só é possível por causa da Solana."
+
+**Descrição:**
+
+"A Solana tem finalização em menos de 400 milissegundos — governança em tempo real."
+
+"As taxas são praticamente zero — viabilizando governar milhares de agentes."
+
+"Com Anchor e PDAs, conseguimos criar primitives seguras e composáveis."
+
+"E o mais importante — é aqui que os agentes já estão."
+
+"Mais de 15 milhões de transações já aconteceram."
+
+Ênfase opcional:
+
+"A gente não está apostando no futuro — estamos construindo onde o presente já existe."
+
+⏱️ ~25s
+
+---
+
+## Slide 4 — Mercado
+
+**Intro:**
+"Vamos olhar o tamanho da oportunidade."
+
+**Descrição:**
+
+"A economia de agentes deve chegar a 47 bilhões de dólares até 2028."
+
+"Na Solana, isso representa cerca de 8,2 bilhões."
+
+Mostre o raciocínio:
+
+"Se apenas 5% dos agentes adotarem governança — são 25 mil agentes pagantes."
+
+"Com ticket médio de 1.370 dólares por mês, isso representa um mercado de 410 milhões por ano."
+
+Feche com clareza:
+
+"E nossos usuários são claros — desenvolvedores, DAOs e protocolos DeFi."
+
+⏱️ ~25–30s
+
+---
+
+## Slide 5 — Modelo de Negócio
+
+**Intro:**
+"É assim que capturamos valor."
+
+**Descrição:**
+
+"40% vem de taxas de protocolo — uma pequena taxa por transação governada."
+
+"35% de planos premium — políticas avançadas, analytics e seguros."
+
+"25% de validadores — que auditam o comportamento dos agentes."
+
+Simplifique:
+
+"Conforme a adoção cresce, a receita cresce junto."
+
+⏱️ ~20–25s
+
+---
+
+## Slide 6 — Diferencial
+
+**Intro:**
+"A gente não foi o primeiro a ver esse problema — mas ninguém resolveu ele por completo."
+
+**Descrição:**
+
+Passe rápido:
+
+* "Agent Registry dá identidade — mas não controle"
+* "SAID dá descoberta — mas não governança"
+* "ElizaOS e GOAT criam agentes — mas sem proteção"
+
+Contraste:
+
+"O Sentinel junta tudo — permissões, circuit breakers, auditoria e governança — em um único padrão."
+
+Entregue o insight:
+
+"O Metaplex não venceu por ser o melhor produto — venceu por virar o padrão."
+
+"É isso que estamos fazendo com governança de agentes."
+
+⏱️ ~25–30s
+
+---
+
+## Slide 7 — Roadmap
+
+**Intro:**
+"Esse é o plano de execução."
+
+**Descrição:**
+
+"We start with a working MVP on devnet — already live." → traduzido:
+
+"Começamos com um MVP funcional na devnet — já rodando."
+
+"Depois SDK e demo — permitindo integração em poucas linhas."
+
+"Em seguida, integrações com ElizaOS, GOAT e agentes reais."
+
+"E por fim — mainnet, auditoria e escala para mais de 100 agentes."
+
+Reforce:
+
+"Nosso foco é validar uso real — não só tecnologia."
+
+⏱️ ~20–25s
+
+---
+
+## Slide 8 — Time & Fechamento
+
+**Intro:**
+"E somos o time certo para construir isso."
+
+**Descrição:**
+
+"Experiência profunda em Solana, Anchor e segurança de smart contracts."
+
+"Entendemos tanto a tecnologia quanto o gap de governança."
+
+Fechamento forte:
+
+"Se agentes de IA vão controlar bilhões em ativos on-chain…"
+
+Pausa.
+
+"Alguém precisa definir as regras."
+
+Pausa curta.
+
+"Esse alguém somos nós."
+
+Finalize:
+
+"Obrigado."
+
+⏱️ ~20–25s

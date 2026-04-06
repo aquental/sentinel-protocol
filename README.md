@@ -272,7 +272,9 @@ If you find a vulnerability, please report it privately to [sol-sentinel-protoco
 Choose your language:
 
 - **[English 🇬🇧](https://docs.google.com/presentation/d/1YTMJlaVirLHUFTg61EvdOotBp80UVgsClunzXGO8zO0/edit?usp=sharing)**
+  - 📄 [Video Pitch](./video/VIDEO.md)
 - **[Português 🇧🇷](https://docs.google.com/presentation/d/1wWexZFpSrlSLVohQmJXl86nkVzFER8kpdtNuNpc86c8/edit?usp=sharing)**
+  - 📄 [Roteiro do Vídeo](./video/VIDEO-pb_br)
   
 
 ## License
